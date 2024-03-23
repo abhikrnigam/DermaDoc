@@ -9,7 +9,7 @@ import 'package:health_app/main_screen.dart';
 import 'package:health_app/register_screen.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Text(
-              " Healthify ",
+              " DermaDoc ",
               style: GoogleFonts.poppins(
                   fontSize: 50,
                   color: Colors.lightBlue,
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
             TextButton(
                 onPressed: () {
                   if (emailController.text.isNotEmpty &&
-                      passwordController.text.length > 6) {
+                      passwordController.text.length > 0) {
                     login();
                     emailController.clear();
                     passwordController.clear();

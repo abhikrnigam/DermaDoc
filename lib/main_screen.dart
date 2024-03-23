@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Icon(
                       Icons.account_circle,
@@ -50,12 +50,12 @@ class _MainScreenState extends State<MainScreen> {
                       color: Colors.white,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 10),
                       child: Text(
                         "${name?.toUpperCase()}",
                         style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 30,
+                            fontSize: 15,
                             fontWeight: FontWeight.w700),
                       ),
                     ),
@@ -81,6 +81,12 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             ListTile(
+              subtitle: const Text("New patients must be registered"),
+              subtitleTextStyle: GoogleFonts.poppins(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                color: Colors.lightBlue,
+              ),
               title: Text("Register Patient",
                   style: GoogleFonts.poppins(
                     fontSize: 15,
@@ -111,20 +117,37 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             ListTile(
+              title: Text(
+                "View patient history",
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.lightBlue,
+                ),
+              ),
+              selected: selectedIndex == 3,
+              onTap: () {
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => PatientHistory(username: name)));
+              },
+            ),
+            ListTile(
               title: Text("Sign Out",
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: Colors.red,
                   )),
-              selected: selectedIndex == 3,
+              selected: selectedIndex == 4,
               onTap: () {
                 Future<void> signOut() async {
                   await FirebaseAuth.instance.signOut().then((value) =>
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const LoginPage())));
+                              builder: (context) => LoginPage())));
                 }
 
                 signOut();
@@ -147,7 +170,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
         backgroundColor: Colors.lightBlue,
         title: Text(
-          "Healthify",
+          "DermaDoc",
           style: GoogleFonts.poppins(
               fontSize: 30, fontWeight: FontWeight.w600, color: Colors.white),
         ),
