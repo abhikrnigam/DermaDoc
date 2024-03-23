@@ -27,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     String? name = FirebaseAuth.instance.currentUser?.email.toString();
     name = name?.replaceAll("@gmail.com", "");
+    //comment test
     return Scaffold(
       body: Column(
         children: [
