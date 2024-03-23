@@ -28,6 +28,7 @@ class _AddImageState extends State<AddImage> {
   String? gender;
   String? phoneNumber;
   String? disease;
+  String? aadharNumber;
   //above are the details of the patients to be registered.
 
   TextEditingController controllerName = TextEditingController();
@@ -35,6 +36,7 @@ class _AddImageState extends State<AddImage> {
   TextEditingController controllerAge = TextEditingController();
   TextEditingController controllerPhoneNumber = TextEditingController();
   TextEditingController controllerDisease = TextEditingController();
+  TextEditingController controllerAadhar = TextEditingController();
   //above given are the editing controllers for the text fields that will be created.
 
   File? image;
@@ -108,8 +110,8 @@ class _AddImageState extends State<AddImage> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Text(
-                  "Tap to Upload",
-                  style: getStyle(20),
+                  "Submit",
+                  style: getStyle(30),
                 ),
               ),
             ]),
@@ -137,7 +139,7 @@ class _AddImageState extends State<AddImage> {
               ),
               TextButton(
                 child: Text(
-                  "Upload",
+                  "Submit",
                   style: getStyle(30),
                 ),
                 onPressed: () {
@@ -153,19 +155,37 @@ class _AddImageState extends State<AddImage> {
     return Container();
   }
 
-  void storeToDatabase(final url, final username) async {
+  // void storeToDatabase(final url, final username) async {
+  //   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //   debugPrint("## Image Upload Done ");
+  //   await firestore
+  //       .collection("Users")
+  //       .doc(username)
+  //       .collection("UploadedImages")
+  //       .add({
+  //         "imagePath": url.toString(),
+  //         "timeUploaded": Timestamp.now(),
+  //       })
+  //       .then((value) => print("The data has been uploaded"))
+  //       .catchError((error) => print("Failed to upload data: $error"));
+  // }
+
+  void registerPatient(final url, final username) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     debugPrint("## Image Upload Done ");
     await firestore
-        .collection("Users")
+        .collection("doctors")
         .doc(username)
-        .collection("UploadedImages")
-        .add({
-          "imagePath": url.toString(),
-          "timeUploaded": Timestamp.now(),
-        })
-        .then((value) => print("The data has been uploaded"))
-        .catchError((error) => print("Failed to upload data: $error"));
+        .collection("patients")
+        .doc(aadharNumber)
+        .set({
+      'Age': age,
+      'Disease': disease.toString(),
+      'Name': name,
+      'UIDAI': aadharNumber,
+      'imagePath': url.toString(),
+      'PhoneNumber': phoneNumber.toString(),
+    });
   }
 
   // ignore: prefer_typing_uninitialized_variables
@@ -185,11 +205,12 @@ class _AddImageState extends State<AddImage> {
     final snapshot = await uploadTask?.whenComplete(() => {});
     final urlDownload = await snapshot?.ref.getDownloadURL();
 
-    storeToDatabase(urlDownload, username);
+    //storeToDatabase(urlDownload, username);
+    registerPatient(urlDownload, username);
     // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Image is Uploaded'),
+        content: Text('Data is uploaded'),
       ),
     );
   }
@@ -324,7 +345,7 @@ class _AddImageState extends State<AddImage> {
                   color: Colors.black,
                 ),
                 onChanged: (val) {
-                  phoneNumber = val;
+                  disease = val;
                 },
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
@@ -337,6 +358,30 @@ class _AddImageState extends State<AddImage> {
                   labelText: "Condition Diagnosed",
                 ),
                 controller: controllerDisease,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                  left: 15, right: 15, top: 10, bottom: 30),
+              child: TextField(
+                cursorColor: Colors.black,
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
+                onChanged: (val) {
+                  aadharNumber = val;
+                },
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(
+                        color: Colors.lightBlue,
+                        width: 2,
+                      )),
+                  labelStyle: getStyle(15),
+                  labelText: "AADHAR Number",
+                ),
+                controller: controllerAadhar,
               ),
             ),
             Row(
