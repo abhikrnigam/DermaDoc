@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class patienthistory extends StatefulWidget {
   String? aadharNumber;
+  String? username;
   patienthistory({@required aadharNumber});
 
   @override
@@ -11,9 +12,11 @@ class patienthistory extends StatefulWidget {
 
 class _patienthistoryState extends State<patienthistory> {
   String? aadharNumber;
+  String? username;
 
   void getAadharNumber() {
     aadharNumber = widget.aadharNumber;
+    username = widget.username;
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_app/AddImage.dart';
 import 'package:health_app/CompareImages.dart';
+import 'package:health_app/PatientVisit.dart';
 import 'package:health_app/login_page.dart';
 
 class MainScreen extends StatefulWidget {
@@ -81,9 +82,9 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             ListTile(
-              subtitle: const Text("New patients must be registered"),
+              subtitle: const Text("New patients must be registered."),
               subtitleTextStyle: GoogleFonts.poppins(
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: FontWeight.w700,
                 color: Colors.lightBlue,
               ),
@@ -100,8 +101,14 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             ListTile(
+              subtitle: const Text("Tap here to initiate the examination"),
+              subtitleTextStyle: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Colors.lightBlue,
+              ),
               title: Text(
-                "View Patient Images",
+                "Patient Visit",
                 style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -110,15 +117,24 @@ class _MainScreenState extends State<MainScreen> {
               ),
               selected: selectedIndex == 2,
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CompareImages(username: name)));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => CompareImages(username: name)));
+
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => patientVisit()));
               },
             ),
             ListTile(
+              subtitle: const Text("View all visits of the patient"),
+              subtitleTextStyle: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Colors.lightBlue,
+              ),
               title: Text(
-                "View patient history",
+                "View Patient's History",
                 style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -134,13 +150,23 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             ListTile(
+              title: Text("View Profile",
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.lightBlue,
+                  )),
+              selected: selectedIndex == 4,
+              onTap: () {},
+            ),
+            ListTile(
               title: Text("Sign Out",
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: Colors.red,
                   )),
-              selected: selectedIndex == 4,
+              selected: selectedIndex == 5,
               onTap: () {
                 Future<void> signOut() async {
                   await FirebaseAuth.instance.signOut().then((value) =>

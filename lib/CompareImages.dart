@@ -14,6 +14,7 @@ import 'package:quickalert/quickalert.dart';
 
 class CompareImages extends StatefulWidget {
   String? username;
+
   CompareImages({required this.username});
 
   @override
@@ -25,6 +26,7 @@ class _CompareImagesState extends State<CompareImages> {
   List<String>? documentPath = ["a"];
   int selectedItems = 0;
   String? username;
+  String? aadharNumber;
   dynamic response;
   void getCurrentUser() async {
     username = widget.username;

@@ -388,7 +388,7 @@ class _AddImageState extends State<AddImage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0),
                   child: Text(
-                    "Tap to upload image ",
+                    "Upload image of condition",
                     style: getStyle(20),
                   ),
                 ),
