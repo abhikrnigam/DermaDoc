@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,11 +22,27 @@ class patientVisit extends StatefulWidget {
 // UIDAI number and the image of the condition.
 
 class _patientVisitState extends State<patientVisit> {
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String? username;
   String? aadharNumber;
+  String? condition;
   String? imagePath;
   TextEditingController controllerAadhar = TextEditingController();
+  TextEditingController controllerCondition = TextEditingController();
+
   File? image;
   final picker = ImagePicker();
+
+  void getUsername() {
+    username = firebaseAuth.currentUser?.email.toString();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUsername();
+  }
 
   void getImage() async {
     try {
@@ -104,7 +121,6 @@ class _patientVisitState extends State<patientVisit> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // this is the break point of the code
               Container(
                 height: MediaQuery.of(context).size.height * 0.3,
                 width: MediaQuery.of(context).size.width * 0.7,
@@ -124,7 +140,7 @@ class _patientVisitState extends State<patientVisit> {
                 ),
                 onPressed: () {
                   //print(imagePath);
-                  //uploadImage(context, username, image!);
+                  uploadData(context, username, image!);
                 },
               ),
             ],
@@ -137,8 +153,8 @@ class _patientVisitState extends State<patientVisit> {
 
   UploadTask? uploadTask;
 
-  Future<void> uploadImage(
-      BuildContext context, String username, File image) async {
+  Future<void> uploadData(
+      BuildContext context, String? username, File image) async {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Uploading, please wait...'),
@@ -149,16 +165,33 @@ class _patientVisitState extends State<patientVisit> {
     final reference = FirebaseStorage.instance.ref().child(pathImage);
     uploadTask = reference.putFile(image);
     final snapshot = await uploadTask?.whenComplete(() => {});
-    final urlDownload = await snapshot?.ref.getDownloadURL();
+    final urlDownload = await snapshot?.ref
+        .getDownloadURL(); //this is the url of the image stored on firebase
 
-    //storeToDatabase(urlDownload, username);
-    //registerPatient(urlDownload, username);
+    uploadVisitToFirestore(username, aadharNumber, urlDownload);
+    // here the username is the name of the doctor
     // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Data is uploaded'),
+        content: Text('Data upload complete!'),
       ),
     );
+  }
+
+  Future<void> uploadVisitToFirestore(
+      String? username, String? aadharNumber, String? imagePath) async {
+    FirebaseFirestore cloudFirestore = FirebaseFirestore.instance;
+    cloudFirestore
+        .collection('doctors')
+        .doc(username.toString())
+        .collection('patients')
+        .doc(aadharNumber.toString())
+        .collection('visits')
+        .add({
+      'Condition': condition,
+      'Date': DateTime.now(),
+      'ImagePath': imagePath,
+    }).then((value) => {debugPrint("Visit Registered")});
   }
 
   @override
@@ -207,6 +240,30 @@ class _patientVisitState extends State<patientVisit> {
                   labelText: "AADHAR Number",
                 ),
                 controller: controllerAadhar,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(
+                  left: 15, right: 15, top: 10, bottom: 10),
+              child: TextField(
+                cursorColor: Colors.black,
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
+                onChanged: (val) {
+                  condition = val;
+                },
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(
+                        color: Colors.lightBlue,
+                        width: 2,
+                      )),
+                  labelStyle: getStyle(15),
+                  labelText: "Condition/Disease",
+                ),
+                controller: controllerCondition,
               ),
             ),
             Padding(
