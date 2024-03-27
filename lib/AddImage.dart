@@ -168,6 +168,7 @@ class _AddImageState extends State<AddImage> {
   //       .catchError((error) => print("Failed to upload data: $error"));
   // }
 
+// this function registers the patient and also the initial visit of the patient to firebase
   void registerPatient(final url, final username) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     debugPrint("## Image Upload Done ");
@@ -183,12 +184,27 @@ class _AddImageState extends State<AddImage> {
       'UIDAI': aadharNumber,
       'imagePath': url.toString(),
       'PhoneNumber': phoneNumber.toString(),
-    });
+    }).then((value) => {debugPrint('Patient registered')});
+    await firestore
+        .collection("doctors")
+        .doc(username)
+        .collection("patients")
+        .doc(aadharNumber)
+        .collection('visits')
+        .add({
+      'Condition': disease.toString(),
+      'Date': DateTime.now(),
+      'imagePath': url.toString(),
+    }).then((value) => {
+              debugPrint("Patient's Initial Visit Registered"),
+            });
   }
 
   // ignore: prefer_typing_uninitialized_variables
   UploadTask? uploadTask;
 
+// this function uploads the image to the firebaseStorage and gets the download link for the image
+// it also calls the registerPatient function.
   Future<void> uploadImage(
       BuildContext context, String username, File image) async {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -203,7 +219,6 @@ class _AddImageState extends State<AddImage> {
     final snapshot = await uploadTask?.whenComplete(() => {});
     final urlDownload = await snapshot?.ref.getDownloadURL();
 
-    //storeToDatabase(urlDownload, username);
     registerPatient(urlDownload, username);
     // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(

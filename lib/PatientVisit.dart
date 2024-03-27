@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quickalert/quickalert.dart';
 
 class patientVisit extends StatefulWidget {
   const patientVisit({super.key});
@@ -23,6 +24,7 @@ class patientVisit extends StatefulWidget {
 
 class _patientVisitState extends State<patientVisit> {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  bool registerePatient = false;
   String? username;
   String? aadharNumber;
   String? condition;
@@ -62,6 +64,20 @@ class _patientVisitState extends State<patientVisit> {
     TextStyle textStyle = GoogleFonts.poppins(
         color: Colors.lightBlue, fontSize: size, fontWeight: FontWeight.bold);
     return textStyle;
+  }
+
+  void checkAadhar(String? aadharNumber, String? username) async {
+    dynamic response = await FirebaseFirestore.instance
+        .collection('doctors')
+        .doc(username)
+        .collection('patients')
+        .doc(aadharNumber)
+        .get();
+    if (response != null) {
+      registerePatient = true;
+    } else {
+      registerePatient = false;
+    }
   }
 
   Widget getWidget() {
@@ -139,8 +155,17 @@ class _patientVisitState extends State<patientVisit> {
                   style: getStyle(30),
                 ),
                 onPressed: () {
-                  //print(imagePath);
                   uploadData(context, username, image!);
+                  // if (registerePatient == true) {
+                  //   uploadData(context, username, image!);
+                  // } else if (registerePatient == false) {
+                  //   QuickAlert.show(
+                  //     context: context,
+                  //     type: QuickAlertType.warning,
+                  //     text:
+                  //         "The patient does not exists. Please register and try again!",
+                  //   );
+                  // }
                 },
               ),
             ],
