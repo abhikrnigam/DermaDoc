@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:health_app/AddImage.dart';
 import 'package:health_app/CompareImages.dart';
+import 'package:health_app/PatientHistory.dart';
 import 'package:health_app/PatientVisit.dart';
 import 'package:health_app/login_page.dart';
 
@@ -143,10 +144,12 @@ class _MainScreenState extends State<MainScreen> {
               ),
               selected: selectedIndex == 3,
               onTap: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => PatientHistory(username: name)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => patienthistory(
+                            username: FirebaseAuth.instance.currentUser?.email
+                                .toString())));
               },
             ),
             ListTile(

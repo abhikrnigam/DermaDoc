@@ -22,6 +22,8 @@ class patientVisit extends StatefulWidget {
 // the fields will be :
 // UIDAI number and the image of the condition.
 
+// the aadhar uniqueness test of the patient is still remaining.
+
 class _patientVisitState extends State<patientVisit> {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   bool registerePatient = false;
