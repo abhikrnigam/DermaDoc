@@ -40,65 +40,81 @@ class _patienthistoryState extends State<patienthistory> {
   bool widgetNumber = false;
 
   Widget getWidget(String? aadharNumber, String? username) {
-    return SingleChildScrollView(
-      child: FutureBuilder(
-        future: _firestore
-            .collection('doctors')
-            .doc(username.toString())
-            .collection('patients')
-            .doc(aadharNumber)
-            .collection('visits')
-            .get(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            int lengthDocs = snapshot.data!.docs.length;
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: lengthDocs,
-              itemBuilder: (context, index) {
-                Timestamp time = snapshot.data!.docs[index]['Date'];
-                DateTime dateTime = time.toDate();
-                String formattedDate =
-                    DateFormat('dd-MM-yyyy').format(dateTime);
-                String condition = snapshot.data!.docs[index]['Condition'];
-                String imageUrl = snapshot.data!.docs[index]['ImagePath'];
-                print("*****");
-                print(formattedDate);
-                print(condition);
-                print(imageUrl);
-                return Container(
-                  height: 100,
-                  width: MediaQuery.of(context).size.width * 0.65,
+    return FutureBuilder(
+      future: _firestore
+          .collection('doctors')
+          .doc(username.toString())
+          .collection('patients')
+          .doc(aadharNumber)
+          .collection('visits')
+          .get(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          int lengthDocs = snapshot.data!.docs.length;
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: lengthDocs,
+            itemBuilder: (context, index) {
+              Timestamp time = snapshot.data!.docs[index]['Date'];
+              DateTime dateTime = time.toDate();
+              String formattedDate = DateFormat('dd-MM-yyyy').format(dateTime);
+              String condition = snapshot.data!.docs[index]['Condition'];
+              String imageUrl = snapshot.data!.docs[index]['ImagePath'];
+
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                child: Container(
                   decoration: BoxDecoration(
                     color: Colors.lightBlue,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    child: Column(
-                      children: [
-                        InteractiveViewer(child: Image.network(imageUrl)),
-                        Text("Condition/Disease : $condition"),
-                        Text("Date : $formattedDate"),
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      // Wrap the image with an AspectRatio to maintain aspect ratio
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InteractiveViewer(
+                          child: ClipRRect(
+                            child: Image.network(
+                              imageUrl,
+                              width: 200,
+                              height: 200,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "Condition : $condition",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          "Date : $formattedDate",
+                          style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            );
-            // return Container(
-            //   child: Text(snapshot.data!.size.toString()),
-            // );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(
-              child: const Text("Waiting for data !!!!"),
-            );
-          } else {
-            return const Text("No data !!!!");
-          }
-        },
-      ),
+                ),
+              );
+            },
+          );
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            child: const Text("Waiting for data !!!!"),
+          );
+        } else {
+          return const Text("No data !!!!");
+        }
+      },
     );
   }
 
@@ -116,8 +132,7 @@ class _patienthistoryState extends State<patienthistory> {
         titleSpacing: 5,
       ),
       body: Material(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.9,
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Container(
@@ -155,9 +170,15 @@ class _patienthistoryState extends State<patienthistory> {
                   decoration: BoxDecoration(
                       color: Colors.lightBlue,
                       borderRadius: BorderRadius.circular(20)),
-                  child: Text(
-                    "Search",
-                    style: getStyle(15),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Search",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
