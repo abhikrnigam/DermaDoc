@@ -194,7 +194,7 @@ class _AddImageState extends State<AddImage> {
         .add({
       'Condition': disease.toString(),
       'Date': DateTime.now(),
-      'imagePath': url.toString(),
+      'ImagePath': url.toString(),
     }).then((value) => {
               debugPrint("Patient's Initial Visit Registered"),
             });
@@ -221,11 +221,11 @@ class _AddImageState extends State<AddImage> {
 
     registerPatient(urlDownload, username);
     // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Data is uploaded'),
-      ),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //     content: Text('Data is uploaded'),
+    //   ),
+    // );
   }
 
   @override
