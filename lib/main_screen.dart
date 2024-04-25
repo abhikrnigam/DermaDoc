@@ -9,6 +9,7 @@ import 'package:health_app/CompareImages.dart';
 import 'package:health_app/PatientHistory.dart';
 import 'package:health_app/PatientVisit.dart';
 import 'package:health_app/login_page.dart';
+import 'package:health_app/profile.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -27,8 +28,8 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String? name = FirebaseAuth.instance.currentUser?.email.toString();
-    name = name?.replaceAll("@gmail.com", "");
+    String? Username = FirebaseAuth.instance.currentUser?.email.toString();
+    String? name = Username?.replaceAll("@gmail.com", "");
 
     return Scaffold(
       body: Column(
@@ -160,7 +161,14 @@ class _MainScreenState extends State<MainScreen> {
                     color: Colors.lightBlue,
                   )),
               selected: selectedIndex == 4,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfilePage(
+                              Username: Username,
+                            )));
+              },
             ),
             ListTile(
               title: Text("Sign Out",
